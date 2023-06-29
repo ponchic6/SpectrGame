@@ -8,14 +8,16 @@ public class Laser : MonoBehaviour
     private GameObject laser;
     private Ray ray;
     private RaycastHit hit;
+    private float MaxLenghtLaser = 20f;
 
     void Start()
     {
-        laser = Instantiate(LaserPrefab, Vector3.zero, Quaternion.identity);
+        laser = Instantiate(LaserPrefab);
         LasersArray.lasers.Add(laser);
         ray.origin = transform.position;
         ray.direction = transform.up;
         SetLaserPos(laser);
+        Debug.Log(ray.direction);
 
     }
 
@@ -31,16 +33,17 @@ public class Laser : MonoBehaviour
         bool intersect = Physics.Raycast(ray, out hit);
         LineRenderer lineRend = laser.GetComponent<LineRenderer>();
         if (intersect)
-        {
-            laser.transform.position = ray.origin;
-            lineRend.SetPosition(0, ray.origin);
-            lineRend.SetPosition(1, hit.point);
+        {   
+            laser.transform.position = transform.position;
+            lineRend.SetPosition(0, Vector3.zero);
+            lineRend.SetPosition(1, hit.point - transform.position);
         }
         else
-        {   
-            laser.transform.position = ray.origin;
-            lineRend.SetPosition(0, ray.origin);
-            lineRend.SetPosition(1, ray.origin + transform.up * 2 );
+        {
+            laser.transform.position = transform.position;
+            lineRend.SetPosition(0, Vector3.zero);
+            lineRend.SetPosition(1, ray.direction * MaxLenghtLaser);
+            Debug.Log(ray.direction);
         }
     }
 }
