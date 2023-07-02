@@ -9,41 +9,46 @@ public class Laser : MonoBehaviour
     private GameObject _mainLaser;
     private Ray _ray;
     private RaycastHit _hit;
+    private Vector3 _finishPointOfRay;
+
     static public float _maxLenghtLaser = 20f;
 
     void Start()
     {
         _mainLaser = Instantiate(LaserPrefab);
-        _ray.origin = transform.position;
-        _ray.direction = transform.up;
-        SetLaserPos(_mainLaser);
+        CalculateRayAndHit(_ray, _hit);
+        RenderLaser(_mainLaser);
 
     }
 
     void Update()
     {
-        _ray.origin = transform.position;
-        _ray.direction = transform.up;
-        SetLaserPos(_mainLaser);
+        CalculateRayAndHit(_ray, _hit);
+        RenderLaser(_mainLaser);
     }
 
-    void SetLaserPos(GameObject laser)
+    void RenderLaser(GameObject laser)
     {
-        bool intersect = Physics.Raycast(_ray, out _hit);
-        LineRenderer lineRend = laser.GetComponent<LineRenderer>();
+        LineRenderer lineRend = laser.GetComponent<LineRenderer>();     
+        laser.transform.position = transform.position + transform.up;
+        lineRend.SetPosition(0, Vector3.zero);
+        lineRend.SetPosition(1, _finishPointOfRay);
+        
+    }
+
+    void CalculateRayAndHit(Ray ray, RaycastHit hit)
+    {
+        ray.origin = transform.position + transform.up;
+        ray.direction = transform.up;
+
+        bool intersect = Physics.Raycast(ray, out hit);
         if (intersect)
-        {
-            laser.transform.position = transform.position;
-            lineRend.SetPosition(0, Vector3.zero);
-            lineRend.SetPosition(1, _hit.point - transform.position);
-            _hit.transform.gameObject.GetComponent<ReflectController>().recivedHit = _hit;
-            _hit.transform.gameObject.GetComponent<ReflectController>().recivedRay = _ray;
+        {   
+            _finishPointOfRay = hit.point - ray.origin;
+            hit.collider.gameObject.GetComponent<ReflectController>().recivedHits.Add(hit);
+            hit.collider.gameObject.GetComponent<ReflectController>().recivedRays.Add(ray);
         }
-        else
-        {
-            laser.transform.position = transform.position;
-            lineRend.SetPosition(0, Vector3.zero);
-            lineRend.SetPosition(1, _ray.direction * _maxLenghtLaser);
-        }
+        else _finishPointOfRay = ray.direction * _maxLenghtLaser;
+
     }
 }
