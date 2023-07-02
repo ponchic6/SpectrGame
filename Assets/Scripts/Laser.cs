@@ -43,10 +43,18 @@ public class Laser : MonoBehaviour
 
         bool intersect = Physics.Raycast(ray, out hit);
         if (intersect)
-        {   
+        {
             _finishPointOfRay = hit.point - ray.origin;
-            hit.collider.gameObject.GetComponent<ReflectController>().recivedHits.Add(hit);
-            hit.collider.gameObject.GetComponent<ReflectController>().recivedRays.Add(ray);
+            if (hit.collider.tag == "Reflector")
+            {           
+                hit.collider.gameObject.GetComponent<Reflect>().recivedHits.Add(hit);
+                hit.collider.gameObject.GetComponent<Reflect>().recivedRays.Add(ray);
+            }
+            if (hit.collider.tag == "Interferometr")
+            {
+                hit.collider.gameObject.GetComponent<Interferometr>().recivedHits.Add(hit);
+                hit.collider.gameObject.GetComponent<Interferometr>().recivedRays.Add(ray);
+            }
         }
         else _finishPointOfRay = ray.direction * _maxLenghtLaser;
 
