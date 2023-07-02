@@ -49,6 +49,7 @@ public class Laser : MonoBehaviour
             {           
                 hit.collider.gameObject.GetComponent<Reflect>().recivedHits.Add(hit);
                 hit.collider.gameObject.GetComponent<Reflect>().recivedRays.Add(ray);
+                hit.collider.gameObject.GetComponent<Reflect>().recivedColors.Add(Color.white);
             }
             if (hit.collider.tag == "Interferometr")
             {
