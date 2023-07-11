@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Laser : MonoBehaviour
+public class SourceLaser : MonoBehaviour
 {
     [SerializeField] private GameObject LaserPrefab;
     private GameObject _mainLaser;
@@ -30,7 +30,7 @@ public class Laser : MonoBehaviour
     void RenderLaser(GameObject laser)
     {
         LineRenderer lineRend = laser.GetComponent<LineRenderer>();     
-        laser.transform.position = transform.position + transform.up;
+        laser.transform.position = transform.position;
         lineRend.SetPosition(0, Vector3.zero);
         lineRend.SetPosition(1, _finishPointOfRay);
         
@@ -38,8 +38,8 @@ public class Laser : MonoBehaviour
 
     void CalculateRayAndHit(Ray ray, RaycastHit hit)
     {
-        ray.origin = transform.position + transform.up;
-        ray.direction = transform.up;
+        ray.origin = transform.position;
+        ray.direction = -transform.forward;
 
         bool intersect = Physics.Raycast(ray, out hit);
         if (intersect)
